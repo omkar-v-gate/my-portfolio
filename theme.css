@@ -1,0 +1,160 @@
+/* =========================================================
+   theme.css  -  COLOUR THEME (Royal blue) (load LAST, after effects.css)
+
+   To change the whole website's colours, only edit the
+   block below. Everything else uses these variables.
+========================================================= */
+
+:root {
+    /* backgrounds */
+    --bg:        #0a1020;     /* page background            */
+    --bg-alt:    #0d1428;     /* alternate sections         */
+    --surface:   #111a33;     /* cards                      */
+    --border:    #223158;     /* card borders               */
+
+    /* text */
+    --text:      #eef3ff;     /* headings                   */
+    --text-soft: #c5d0ee;     /* sub-headings               */
+    --text-mute: #90a0c4;     /* paragraphs                 */
+
+    /* brand colours */
+    --accent:    #5b8cff;     /* main colour (royal blue)   */
+    --accent-2:  #7dd3fc;     /* second colour (sky blue)   */
+    --accent-ink:#050b1c;     /* text on top of --accent    */
+
+    --header-bg: rgba(10, 16, 32, .82);
+}
+
+/* ---------------------------------------------------------
+   OTHER READY-MADE PALETTES
+   Copy the 3 lines you like into the block above.
+
+   Emerald:   --accent:#34d399;  --accent-2:#22d3ee;  --accent-ink:#04120d;
+   Rose:      --accent:#fb7185;  --accent-2:#f59e0b;  --accent-ink:#1a0508;
+   Original:  --accent:#00e5ff;  --accent-2:#1479ff;  --accent-ink:#06111c;
+--------------------------------------------------------- */
+
+
+/* ---------- Glass cards: see-through with a blur ---------- */
+.timeline-card,
+.achievement-card,
+.skill-box,
+.contact-item {
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+/* ---------- Soft dot grid over the page ---------- */
+body::before {
+    content: "";
+    position: fixed; inset: 0;
+    z-index: 0; pointer-events: none;
+    background-image: radial-gradient(color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 25%, transparent 78%);
+    mask-image: radial-gradient(ellipse at center, #000 25%, transparent 78%);
+}
+
+/* ---------- Light that follows the mouse across the whole page ---------- */
+.cursor-glow {
+    position: fixed; top: 0; left: 0;
+    width: 300px; height: 300px;
+    margin: -150px 0 0 -150px;           /* centres the glow on the mouse */
+    border-radius: 50%;
+    background: radial-gradient(circle,
+                color-mix(in srgb, var(--accent) 9%, transparent),
+                transparent 65%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity .4s ease;
+}
+
+/* ---------- Nicer text selection and links in the new colours ---------- */
+::selection { background: color-mix(in srgb, var(--accent) 35%, transparent); }
+
+@media (max-width: 750px), (hover: none) {
+    .cursor-glow { display: none; }      /* phones have no mouse */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cursor-glow { display: none; }
+}
+
+
+/* =========================================================
+   PROJECTS SECTION (on the main page)
+   Uses the same card style as Achievements, so the scroll
+   animation, tilt and glow work automatically.
+========================================================= */
+
+/* 2 project cards per row (Achievements use 3) */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+/* screenshot: fill the box and show the TOP of the image */
+.project-card .certificate-image img {
+    object-fit: cover;
+    object-position: top;
+}
+
+/* when a project has no screenshot, show a big icon instead */
+.project-visual {
+    height: 210px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-alt);
+    color: var(--accent);
+    font-size: 64px;
+}
+
+/* small rounded labels for the tech stack */
+.tech-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 18px;
+}
+
+.tech-tags span {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* buttons row at the bottom of a project card */
+.project-links { display: flex; flex-wrap: wrap; gap: 12px; }
+.project-links .certificate-btn { margin-top: 0; }
+
+@media (max-width: 950px) {
+    .projects-grid { grid-template-columns: 1fr; }
+}
+
+
+/* =========================================================
+   HERO TYPEWRITER
+   Letters get the class "ch" from effects.js and appear one by one.
+   The 4 text blocks themselves just need to be visible from the start.
+========================================================= */
+.ch { animation: chIn .01s linear both; }
+@keyframes chIn { from { opacity: 0; } to { opacity: 1; } }
+
+.home-content > :nth-child(-n+4) { animation-delay: .05s; }   /* Hello / name / title / description */
+.home-image { animation-delay: .3s; }                           /* photo */
+
+@media (prefers-reduced-motion: reduce) {
+    .ch { animation: none; }
+}
+
+
+/* =========================================================
+   TITLES TYPE THEMSELVES WHEN SCROLLED INTO VIEW
+   effects.js wraps each letter in <span class="tc">.
+   Letters stay hidden until the box gets the class "typing".
+========================================================= */
+.tc { opacity: 0; }
+.typing .tc { animation: chIn .01s linear forwards; }

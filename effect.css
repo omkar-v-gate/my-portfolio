@@ -1,0 +1,172 @@
+/* =========================================================
+   EFFECTS LAYER  (load AFTER style.css)
+========================================================= */
+
+/* ---------- Scroll progress bar ---------- */
+.progress {
+    position: fixed; top: 0; left: 0; z-index: 1100;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: scaleX(0); transform-origin: left;
+    pointer-events: none;
+}
+
+/* ---------- Hero: soft aurora glow behind content ---------- */
+.home { position: relative; overflow: hidden; }
+.home-container { position: relative; z-index: 1; }
+
+.home::before, .home::after {
+    content: ""; position: absolute; border-radius: 50%;
+    filter: blur(70px); opacity: .13; pointer-events: none;
+}
+.home::before {
+    width: 260px; height: 260px; top: 8%; left: -90px;
+    background: var(--accent);
+    animation: drift 18s ease-in-out infinite;
+}
+.home::after {
+    width: 240px; height: 240px; bottom: 4%; right: -80px;
+    background: var(--accent-2);
+    animation: drift 22s ease-in-out infinite reverse;
+}
+
+/* ---------- Hero: name shimmer ---------- */
+.home-content > h1 {
+    background: linear-gradient(100deg, var(--text) 0%, var(--text) 42%, var(--accent) 50%, var(--text) 58%, var(--text) 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+    animation: rise .8s var(--ease) .15s both, shimmer 7s linear 1.4s infinite;
+}
+
+/* ---------- Hero: typing line (inserted by effects.js) ---------- */
+.typed-line {
+    min-height: 1.8em; margin-bottom: 18px;
+    color: var(--text-mute); font-size: clamp(16px, 2vw, 20px);
+}
+.typed-word { color: var(--accent); font-weight: 600; }
+.cursor {
+    display: inline-block; width: 2px; height: 1.1em; margin-left: 3px;
+    background: var(--accent); vertical-align: -.2em;
+    animation: blink 1s steps(1) infinite;
+}
+.home-content > :nth-child(7) { animation-delay: .65s; }
+
+/* ---------- Hero: profile ring ---------- */
+.image-border {
+    background-size: 200% 200%;
+    animation: profileFloat 6s ease-in-out infinite, gradientShift 8s ease infinite;
+}
+
+/* ---------- Section heading underline draws itself ---------- */
+.section-heading span {
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .9s var(--ease) .3s;
+}
+.section-heading.in span { transform: scaleX(1); }
+
+/* ---------- Timeline cards slide in from their own side ---------- */
+.journey-column:first-child .timeline-card.reveal { translate: -34px 0; }
+.journey-column:last-child  .timeline-card.reveal { translate:  34px 0; }
+.timeline-card.reveal.in { translate: 0 0; }
+
+.reveal { transition: opacity .8s ease, transform .8s var(--ease), translate .8s var(--ease); }
+
+/* once the entrance finishes, restore snappy hover transitions
+   (the reveal transition would otherwise swallow border/shadow changes) */
+.reveal.in.done {
+    transition: transform .35s var(--ease), translate .35s ease,
+                box-shadow .35s ease, border-color .35s ease, background .4s ease;
+}
+
+/* ---------- Certificate images settle in ---------- */
+.achievement-card .certificate-image img { scale: 1.18; }
+.achievement-card.in .certificate-image img { scale: 1; transition: scale 1.3s var(--ease), transform .6s var(--ease); }
+
+/* ---------- Cursor spotlight on cards ---------- */
+.spot::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%),
+                color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
+    opacity: 0; transition: opacity .35s ease; pointer-events: none;
+}
+.spot:hover::after { opacity: 1; }
+
+/* ---------- 3D tilt (variables set by effects.js) ---------- */
+.tilt.reveal.in.done:hover {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-6px);
+    transition: transform .12s ease-out, box-shadow .35s ease, border-color .35s ease;
+}
+
+/* ---------- Magnetic buttons ---------- */
+.btn, .social-links a, .footer-social a { translate: var(--tx, 0px) var(--ty, 0px); }
+
+.btn {
+    transition: translate .25s ease-out, transform .3s var(--ease),
+                box-shadow .3s ease, background .3s, color .3s;
+}
+.social-links a, .footer-social a {
+    transition: translate .25s ease-out, transform .3s var(--ease), color .3s, border-color .3s;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes shimmer { 0% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
+@keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(60px, 40px); } }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- Small screens / accessibility ---------- */
+@media (max-width: 750px) {
+    .home::before, .home::after { opacity: .09; }
+    .journey-column .timeline-card.reveal { translate: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home::before, .home::after { animation: none; }
+    .home-content > h1 { animation: none; color: var(--text); background: none; }
+    .cursor { animation: none; }
+    .achievement-card .certificate-image img { scale: 1; }
+}
+
+
+/* =========================================================
+   SKILLS: staggered pop-in, icon entrance, hover accent line
+========================================================= */
+.skill-box.reveal { transform: translateY(26px) scale(.94); }
+.skill-box.reveal.in { transform: none; }
+
+.skill-box.reveal img { scale: .4; rotate: -25deg; opacity: 0; }
+
+.skill-box.in img {
+    scale: 1; rotate: 0deg; opacity: 1;
+    transition: scale .8s cubic-bezier(.34, 1.56, .64, 1) .25s,
+                rotate .8s var(--ease) .25s,
+                opacity .4s ease .25s,
+                transform .4s var(--ease),
+                filter .4s ease;
+}
+
+.skill-box:hover img { filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--accent) 35%, transparent)); }
+
+.skill-box::before {
+    content: ""; position: absolute; left: 0; bottom: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .45s var(--ease);
+}
+.skill-box:hover::before { transform: scaleX(1); }
+
+.skill-box h3 { transition: color .3s ease; }
+.skill-box:hover h3 { color: var(--accent); }
+
+/* ---------- Hero photo follows the mouse slightly (set by effects.js) ---------- */
+.home-image .image-border {
+    translate: var(--px, 0px) var(--py, 0px);
+    transition: translate .4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skill-box.reveal img { scale: 1; rotate: 0deg; opacity: 1; }
+    .skill-box.reveal { transform: none; }
+}
